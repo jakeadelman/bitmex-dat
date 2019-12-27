@@ -11,9 +11,8 @@ import psycopg2
 class Bitmex(object):
         
         def __init__(self):
-                self.now = datetime.datetime.utcnow()
-                self.now_h = self.now.strftime("%Y-%m-%d %H:%M")
-                self.five_mins_ago = self.now- datetime.timedelta(minutes=5)
+                self.now_h = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M")
+                self.five_mins_ago = datetime.datetime.utcnow()- datetime.timedelta(minutes=5)
                 self.fma_h = self.five_mins_ago.strftime("%Y-%m-%d %H:%M")
                 # print(now_h, fma_h)
 
@@ -82,14 +81,14 @@ class Bitmex(object):
         def run(self):                       
                 OI = self.fetch_open_interest()
                 LS = self.fetch_longs_shorts()
-                n = self.now_h
+                
 
                 IQ = """INSERT INTO liquidity
                         (openinterest, long, short, bpa, spa, avgprice, timestamp)
                         VALUES
                         (%s, %s, %s, %s, %s, %s, %s);"""
 
-                VALS = (OI, LS['longs'], LS['shorts'], LS['BPA'], LS['SPA'], LS['AVGprice'], str(n))
+                VALS = (OI, LS['longs'], LS['shorts'], LS['BPA'], LS['SPA'], LS['AVGprice'], str(self.now_h))
                 print(VALS)
                 conn = psycopg2.connect(host='localhost',
                                         port="5432",
