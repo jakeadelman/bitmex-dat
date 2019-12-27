@@ -9,15 +9,21 @@ import psycopg2
 
 
 class Bitmex(object):
+        
+        def __init__(self):
+                self.now = datetime.datetime.utcnow()
+                self.now_h = self.now.strftime("%Y-%m-%d %H:%M")
+                self.five_mins_ago = self.now- datetime.timedelta(minutes=5)
+                self.fma_h = self.five_mins_ago.strftime("%Y-%m-%d %H:%M")
+                # print(now_h, fma_h)
 
-        now = datetime.datetime.utcnow()
-        now_h = now.strftime("%Y-%m-%d %H:%M")
-        five_mins_ago = now- datetime.timedelta(minutes=5)
-        fma_h = five_mins_ago.strftime("%Y-%m-%d %H:%M")
-        # print(now_h, fma_h)
-
-        BPA = 0
-        SPA = 0
+                self.BPA = 0
+                self.SPA = 0
+                self.buys = 0
+                self.sells = 0
+                self.buycount = 0
+                self.sellcount = 0
+               
 
 
         def fetch_open_interest(self):
@@ -46,30 +52,27 @@ class Bitmex(object):
                 r = requests.get(url=URL, params=PARAMS)
                 # pprint(r.json())
                 data = r.json()
-                buys = 0
-                sells = 0
-                buycount = 0
-                sellcount = 0
+              
                 
 
                 for dat in data:
                         if dat['side']=='Buy':
-                                buys+=dat['size']
+                                self.buys+=dat['size']
                                 self.BPA+=dat['price']
-                                buycount+=1
+                                self.buycount+=1
                         if dat['side']=='Sell':
-                                sells+=dat['size']
+                                self.sells+=dat['size']
                                 self.SPA+=dat['price']
-                                sellcount+=1
-                print(buys, sells, self.BPA, self.SPA, len(data))
-                BPAfin=self.BPA//buycount
-                SPAfin=self.SPA//sellcount
-                AVGprice=(self.BPA+self.SPA)/(buycount+sellcount)
+                                self.sellcount+=1
+                print(self.buys, self.sells, self.BPA, self.SPA, len(data))
+                BPAfin=self.BPA//self.buycount
+                SPAfin=self.SPA//self.sellcount
+                AVGprice=(self.BPA+self.SPA)/(self.buycount+self.sellcount)
                 AVGprice= round(AVGprice,1)
                 print(BPAfin, SPAfin,AVGprice)                
                 long_short = {}
-                long_short['longs'] = buys
-                long_short['shorts'] = sells
+                long_short['longs'] = self.buys
+                long_short['shorts'] = self.sells
                 long_short['BPA'] = BPAfin
                 long_short['SPA'] = SPAfin
                 long_short['AVGprice']=AVGprice
@@ -104,4 +107,4 @@ while True:
                 Bitmex().run()
         time.sleep(60)
 
-#(market) close long + open short : market open long + close short
+#(market) close long + open short : market open long + close short˝
