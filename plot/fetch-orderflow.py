@@ -106,7 +106,7 @@ class Bitmex(object):
 # Bitmex().fetch_longs_shorts()
 # Bitmex().run()
 while True:
-        if datetime.datetime.now().minute % 1 == 0:
+        if datetime.datetime.now().minute % 5 == 0:
                 Bitmex().run()
         time.sleep(60)
 
