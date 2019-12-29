@@ -70,8 +70,6 @@ class Bitmex(object):
                         except:
                                 BPAfin=data[-1]['price']
                                 SPAfin=data[-1]['price']
-                        finally:
-                                pass
                 except:
                         pass 
                 

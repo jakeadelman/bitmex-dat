@@ -200,7 +200,7 @@ sp = np.array(bsavg[1])
 x2 = np.array(res[1])
 x3 = np.array(res[2])
 print("last timestamp: "+ initres[7][-1])
-
+print(p)
 fig, axs = plt.subplots(3)
 # fig.suptitle('Vertically stacked subplots')
 axs[0].plot(y, x)
