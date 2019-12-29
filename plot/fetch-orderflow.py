@@ -47,32 +47,33 @@ class Bitmex(object):
                         'startTime':self.fma_h,
                         'endTime':self.now_h
                         }
-
-                r = requests.get(url=URL, params=PARAMS)
-                # pprint(r.json())
-                data = r.json()
-              
-                
-
-                for dat in data:
-                        if dat['side']=='Buy':
-                                self.buys+=dat['size']
-                                self.BPA+=dat['price']
-                                self.buycount+=1
-                        if dat['side']=='Sell':
-                                self.sells+=dat['size']
-                                self.SPA+=dat['price']
-                                self.sellcount+=1
-                print(self.buys, self.sells, self.BPA, self.SPA, len(data))
                 try:
-                        BPAfin=self.BPA//self.buycount
-                        SPAfin=self.SPA//self.sellcount
+                        r = requests.get(url=URL, params=PARAMS)
+                        # pprint(r.json())
+                        data = r.json()
+                
+                        
+
+                        for dat in data:
+                                if dat['side']=='Buy':
+                                        self.buys+=dat['size']
+                                        self.BPA+=dat['price']
+                                        self.buycount+=1
+                                if dat['side']=='Sell':
+                                        self.sells+=dat['size']
+                                        self.SPA+=dat['price']
+                                        self.sellcount+=1
+                        print(self.buys, self.sells, self.BPA, self.SPA, len(data))
+                        try:
+                                BPAfin=self.BPA//self.buycount
+                                SPAfin=self.SPA//self.sellcount
+                        except:
+                                BPAfin=data[-1]['price']
+                                SPAfin=data[-1]['price']
+                        finally:
+                                pass
                 except:
-                        BPAfin=data[-1]['price']
-                        SPAfin=data[-1]['price']
-                finally:
-                        BPAfin =7500
-                        SPAfin =7500
+                        pass 
                 
                 AVGprice=(self.BPA+self.SPA)/(self.buycount+self.sellcount)
                 AVGprice= round(AVGprice,1)
