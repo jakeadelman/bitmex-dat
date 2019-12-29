@@ -27,7 +27,7 @@ def fetch():
                             password="jakeadelman")
         cur = conn.cursor()
         cur.execute("SELECT id, openinterest, long, short, bpa, spa, avgprice, timestamp FROM liquidity WHERE"+
-        " id>100 ORDER BY id DESC")
+        " id>120 ORDER BY id DESC")
         rows = cur.fetchall()
         fin = []
         ids = []
@@ -57,6 +57,8 @@ def fetch():
                
                 longs.append(row[2])            
                 short.append(row[3]) 
+                # print(len(bpa))
+               
                 bpa.append(row[4])
                 spa.append(row[5])
                 avgprice.append(row[6])
@@ -65,7 +67,7 @@ def fetch():
                 # print("out")
                 ids.append(row[0])
                 openinterest.append(row[1]) 
-                longdiv = (row[1]/2)
+                longdiv = (row[1]//2)
                 longs.append(longdiv)
                 short.append(longdiv)
                 bpa.append(row[4])
@@ -99,6 +101,40 @@ def fetch():
     finally:
         if conn is not None:
             conn.close()
+
+def get_avg(bpa,spa):
+    fin = []
+    bpafin = []
+    spafin = []
+    j=0
+    while j<len(bpa):
+        bpatot = 0
+        spatot = 0
+        if j==0:
+            bpafin.append(bpa[0])
+            spafin.append(spa[0])
+        else:
+            for i in range(j):
+                bpatot+=bpa[i+1]
+
+            for i in range(j):
+                spatot+=spa[i+1]
+            
+            # bpatot+=bpa[j]
+            # spatot+=spa[j]
+            # print(row[4],row[5], len(short))
+            bpatot = bpatot//j
+            spatot = spatot//j
+            print(bpatot,spatot)
+            bpafin.append(bpatot)
+            spafin.append(spatot)
+        j+=1
+
+    fin.append(bpafin)
+    fin.append(spafin)
+    return(fin)
+
+
 
 def format_long_short(res):
     final = []
@@ -157,6 +193,10 @@ res = format_long_short(initres)
 
 y = np.array(initres[0])
 x = np.array(initres[1])
+p = np.array(initres[4])
+bsavg = get_avg(initres[5], initres[6])
+bp = np.array(bsavg[0])
+sp = np.array(bsavg[1])
 x2 = np.array(res[1])
 x3 = np.array(res[2])
 print("last timestamp: "+ initres[7][-1])
@@ -166,9 +206,9 @@ fig, axs = plt.subplots(3)
 axs[0].plot(y, x)
 axs[1].plot(y, x2)
 axs[1].plot(y, x3)
-axs[2].plot(y, initres[4])
-axs[2].plot(y, initres[5])
-axs[2].plot(y, initres[6])
+axs[2].plot(y, p)
+axs[2].plot(y, bp)
+axs[2].plot(y, sp)
 
 labels=['openinterest','long/short change','price']
 i=0

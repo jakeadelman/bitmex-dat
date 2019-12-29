@@ -70,6 +70,8 @@ class Bitmex(object):
                 except:
                         BPAfin=data[-1]['price']
                         SPAfin=data[-1]['price']
+                finally:
+                        break
                 AVGprice=(self.BPA+self.SPA)/(self.buycount+self.sellcount)
                 AVGprice= round(AVGprice,1)
                 print(BPAfin, SPAfin,AVGprice)                
