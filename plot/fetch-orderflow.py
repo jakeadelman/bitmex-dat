@@ -72,9 +72,11 @@ class Bitmex(object):
                                 SPAfin=data[-1]['price']
                 except:
                         pass 
-                
-                AVGprice=(self.BPA+self.SPA)/(self.buycount+self.sellcount)
-                AVGprice= round(AVGprice,1)
+                try:
+                        AVGprice=(self.BPA+self.SPA)/(self.buycount+self.sellcount)
+                        AVGprice= round(AVGprice,1)
+                except:
+                        AVGprice=data[-1]['price']
                 print(BPAfin, SPAfin,AVGprice)                
                 long_short = {}
                 long_short['longs'] = self.buys

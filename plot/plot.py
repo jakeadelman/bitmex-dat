@@ -27,7 +27,7 @@ def fetch():
                             password="jakeadelman")
         cur = conn.cursor()
         cur.execute("SELECT id, openinterest, long, short, bpa, spa, avgprice, timestamp FROM liquidity WHERE"+
-        " id>120 ORDER BY id DESC")
+        " id>600 ORDER BY id DESC")
         rows = cur.fetchall()
         fin = []
         ids = []
@@ -125,7 +125,7 @@ def get_avg(bpa,spa):
             # print(row[4],row[5], len(short))
             bpatot = bpatot//j
             spatot = spatot//j
-            print(bpatot,spatot)
+            # print(bpatot,spatot)
             bpafin.append(bpatot)
             spafin.append(spatot)
         j+=1
@@ -200,7 +200,7 @@ sp = np.array(bsavg[1])
 x2 = np.array(res[1])
 x3 = np.array(res[2])
 print("last timestamp: "+ initres[7][-1])
-print(p)
+# print(p)
 fig, axs = plt.subplots(3)
 # fig.suptitle('Vertically stacked subplots')
 axs[0].plot(y, x)
